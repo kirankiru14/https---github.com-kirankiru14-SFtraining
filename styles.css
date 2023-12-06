@@ -1,0 +1,26 @@
+.container {
+    margin-top: 20px;
+}
+button {
+    margin-top: 20px !important;
+}
+/* th {
+    background-color: #c04949;
+} */
+
+/* #getTable {
+    width: 100%;
+    background-color: #FFFFFF;
+    margin: 1em 0em;
+    border: 1px solid rgba(34, 36, 38, 0.15);
+    box-shadow: none;
+    border-radius: 0.28571429rem;
+    text-align: left;
+    color: rgba(0, 0, 0, 0.87);
+    border-collapse: separate;
+    border-spacing: 0px;
+  } */
+
+  /* #getTable th {
+    background-color: #928e8e;
+  } */
