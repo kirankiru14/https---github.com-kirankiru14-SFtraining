@@ -1,84 +1,91 @@
-//import 'semantic-ui-css/semantic.min.css'
-"use strict"
-
-let data
-
-import('./src/moviesPlay.js')
-	.then(res => {
-		console.log('data imported into data constant');
-		data = res;
-	});
-
-function inputChanged(event) {
-	document.getElementById('output').innerHTML = event.target.value;
+"use strict";
+ 
+let data;
+let filteredMoviesOutput; // To store the output from run()
+ 
+import('../src/moviesPlay.js')
+    .then(res => {
+        console.log('data imported into data constant');
+        data = res;
+        filteredMoviesOutput = run(); // Save the output from run()
+    })
+    .catch(error => {
+        console.error('Error importing data:', error);
+    });
+ 
+function run() {
+    const filteredMovies = data.hindiMovies.filter(movie => {
+        return movie.runtimeMinutes > 180;
+    });
+ 
+    // const totalRuntime = filteredMovies.reduce((acc, movie) => {
+    //     console.log('movie runTime = ',movie.runtimeMinutes);
+    //     return acc + movie.runtimeMinutes;
+    // }, 0);
+ 
+    // console.log('Total Runtime: ' + totalRuntime + ', avg runtime: ' + Math.ceil(totalRuntime / filteredMovies.length));
+ 
+    // Reformat the filtered output
+    const output = filteredMovies.map(movie => {
+        return {
+            title: movie.title,
+            releaseDate: movie.releaseDate,
+            runtimeMinutes: movie.runtimeMinutes,
+            id: movie.tmdbId
+        };
+    });
+ 
+    console.log(output);
+ 
+    return output; // Return the output to be used later
 }
-
-function onSubmit(event) {
-	event.preventDefault();
-	console.log('Form Submitted'); 
-}
-
-function showCounts() {
-	console.log('showcounts ',data.getCounts());
-	moviesBtwDates();
-}
-
-//this is core javascript code
-// function moviesBtwDates() {
-// 	let MoviesWithinDates = [];
-// 	const startDate = '1970-01-01';
-// 	const endDate = '1980-01-01';
-// 			for(let i =0; i<data.hindiMovies.length;i++){
-// 				let relDate = data.hindiMovies[i].releaseDate;
-// 				if(relDate>=startDate && relDate<=endDate){
-// 					MoviesWithinDates.push(data.hindiMovies[i]);
-// 				}
-// 			}
-// 			console.log(MoviesWithinDates);
+ 
+function getMovieInformation() {
+	console.log('inside getMovieInfo');
+    const apiKey = 'cc37399832696ae72d6412c05725058a';
+    const imageUrl = 'https://image.tmdb.org/t/p/original';
+ 
+    const contentDiv = document.getElementById('content');//this data will be shown in html
 	
-// }
-
-
-	function moviesBtwDates() {
-	// var employees =[
-	// 	{id:1, name:'Ram'},
-	// 	{id:2, name:'sham'}
-	// ];
-	//
-
-	// var nameArr = []
-	// employees.forEach(function(employee) {
-	// 	nameArr.push(employee.name);
-	// });
-
-	// console.log('emp Names ',nameArr);
-
-
-const startDate = '1970-01-01';
-const endDate = '1990-01-01';
-
-const selectedMovies =data.hindiMovies
-.filter(movie => movie.releaseDate >=startDate && movie.releaseDate <= endDate)
-.map(movie =>({movie:movie.originalTitle,release:movie.releaseDate}));
-	console.log('selected movies are ',selectedMovies);
-	
-	let newTable = '<tr><th>movie Name </th><th>releaseDate</th></tr>';
-selectedMovies.forEach(element => {
-	newTable += `<tr><td>${element.movie}</td><td>${element.release}</td></tr>`
-});
-document.getElementById('getTable').innerHTML = newTable;
-		console.log(newTable);
-
-
-		const genresType = 'Crime';
-		const genresTypeMovie = data.hindiMovies.filter(movie => movie.genres.filter(a =>a.name===genresType) )
-		.map(movie => ({movie:movie.originalTitle, movieGenres:movie.genres.map(g => g.name).join(',')}));
-		var getcontent = document.getElementById('getGenres');
-		console.log('selected genres movie are ',genresTypeMovie );
-		let genresTable = '<tr><th>movie Name </th><th>Genres</th></tr>';
-		genresTypeMovie.forEach(element => {
-			genresTable += `<tr><td>${element.movie}</td><td>${element.movieGenres}</td></tr>`;
-		});
-		console.log('genres Table ',genresTable);
-		getcontent.innerHTML=genresTable;
-	}	
+    // Iterate through the saved output and display movie information
+    filteredMoviesOutput.forEach(movie => {
+        const fetchUrl = `https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}`;
+		
+        fetch(fetchUrl)
+            .then(response => response.json())
+            .then(movieInfo => {
+                const htmlContent = // `
+            //     <div>
+			// 	<img class="movie-poster" src='${imageUrl}${movieInfo.poster_path}' style='height: 300px;' />
+            //         <h3>${movie.title}</h3>
+            //         <p>Release Date: ${movie.releaseDate}</p>
+            //         <p>Runtime Minutes: ${movie.runtimeMinutes}</p>
+                    
+            //     </div>
+			// 	<hr>
+			// 	<br>
+            // `
+			
+			
+									`<div class="ui link cards">
+						<div class="card">
+							<div class="image">
+							<img class="movie-poster" src='${imageUrl}${movieInfo.poster_path}' style='height: 300px;' />
+							</div>
+							<div class="content">
+							<div class="header">${movie.title}</div>
+							<div class="description">
+							<p>Release Date: ${movie.releaseDate}</p>
+							<p>Runtime Minutes: ${movie.runtimeMinutes}</p>
+							</div>
+							</div>
+						</div>`
+			;
+           
+                contentDiv.innerHTML += htmlContent;
+				console.log('Poster path url ',movieInfo.poster_path);
+				console.log('movieInfo ', movieInfo);
+            })
+            .catch(error => console.error('Error fetching movie information:', error));
+    });
+}
