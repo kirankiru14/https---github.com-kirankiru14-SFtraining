@@ -20,7 +20,7 @@ function run() {
  
     // const totalRuntime = filteredMovies.reduce((acc, movie) => {
     //     console.log('movie runTime = ',movie.runtimeMinutes);
-    //     return acc + movie.runtimeMinutes;
+    //     return acc + movie.runtimeMinutes; 
     // }, 0);
  
     // console.log('Total Runtime: ' + totalRuntime + ', avg runtime: ' + Math.ceil(totalRuntime / filteredMovies.length));
