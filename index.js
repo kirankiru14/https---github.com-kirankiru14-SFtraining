@@ -8,32 +8,56 @@ const personUrl = 'https://api.themoviedb.org/3/person/';
 const movieUrl = 'https://api.themoviedb.org/3/movie/';
 const queryString = window.location.search;
 const queryParamsMap = new URLSearchParams(queryString);
+let genreNames;
 import('../src/moviesPlay.js')
     .then(res => {
+		console.log(res);
         console.log('data imported into data constant');
+		
         data = res;
         filteredMoviesOutput = run(); // Save the output from run()
+		let genreOptions =`<option value="" disabled selected>Select Genre</option>`;
+		genreNames = res.genres.map(genre => genre.name);
+		console.log('genres data ', genreNames);
+		genreNames.forEach(element => {
+			console.log(element);
+			genreOptions += `<option value="${element}">${element}</option>`
+		});
+		document.getElementById('genre').innerHTML=genreOptions;
+
 		showMovie(queryParamsMap.get('id'),queryParamsMap.get('posterPath'));
 		const optionsArray = moviesDropdown(filteredMoviesOutput);
 		document.getElementById('movies').innerHTML = optionsArray;
+		console.log('line 23');
     })
     .catch(error => {
         console.error('Error importing data:', error);
     });
+	function populateGenreList() {
+
+		
+	}
 
 function run() {
     const filteredMovies = data.hindiMovies.filter(movie => {
+		console.log('line 43 ',movie);
+		movie.filter(m => {
+			m.genre.name
+		})
         return movie.runtimeMinutes > 180;
     });
 
     // Reformat the filtered output
     const output = filteredMovies.map(movie => {
+		// const genreNames = movie.genres.map(genre => genre.name);
+		// console.log('genres data ', genreNames);
         return {
             title: movie.title,
             releaseDate: movie.releaseDate,
             runtimeMinutes: movie.runtimeMinutes,
             id: movie.tmdbId,
 			PosterPath: movie.posterUrl
+			
         };
     });
 
@@ -87,6 +111,10 @@ function getMovieInformation() {
             console.log('All movie information fetched');
         })
         .catch(error => console.error('Error in Promise.all:', error));
+}
+
+function genreSelected(){
+	console.log('selected genre is : ',document.getElementById('genre').value);
 }
 
 function showMovie(id, posterPath) {
