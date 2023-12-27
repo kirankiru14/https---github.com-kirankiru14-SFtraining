@@ -11,6 +11,18 @@ const movieUrl = 'https://api.themoviedb.org/3/movie/';
 const queryString = window.location.search;
 const queryParamsMap = new URLSearchParams(queryString);
 let genreNames;
+
+function openNav() {
+	document.getElementById("mySidebar").style.width = "250px";
+	document.getElementById("main").style.marginLeft = "250px";
+  }
+  
+  function closeNav() {
+	document.getElementById("mySidebar").style.width = "0";
+	document.getElementById("main").style.marginLeft= "0";
+  }
+
+
 import('../src/moviesPlay.js')
     .then(res => {
 		console.log(res);
