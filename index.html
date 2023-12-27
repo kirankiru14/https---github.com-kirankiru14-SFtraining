@@ -7,25 +7,14 @@
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.css">
     <script src="index.js"></script>
   </head>
-  <!-- <body>
-    
-    <div class="ui container">
-      <button class="ui button primary" onclick="getMovieInformation()">Get Movie Info</button>
-      <select name="Genre" multiple="" class="ui fluid dropdown" id="genre"
-          onchange="genreSelected()">
-          
-        </select>
-      <hr/>
-            <div id="content">
-            </div>
-          
-    </div>
-  </body>
-</html> -->
 <body>
-  <select name="Genre" class="ui fluid dropdown" id="genre" onchange="genreSelected()">
-    <!-- Add dropdown options here -->
+  <div class="ui sizer vertical segment">
+    <div class="ui medium header">
+  <select class="ui fluid dropdown" id="genre" onchange="genreSelected()">
+    
   </select>
+  </div>
+</div>  
   <div class="ui container">
     <div class="container">
       <button class="ui button primary" onclick="getMovieInformation()">Get Movie Info</button>
@@ -33,7 +22,6 @@
     </div>
     <hr/>
     <div id="content">
-      <!-- Content goes here -->
     </div>
   </div>
 </body>

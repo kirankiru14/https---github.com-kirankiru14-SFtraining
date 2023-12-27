@@ -2,6 +2,8 @@
 
 let data;
 let filteredMoviesOutput; // To store the output from run()
+let genresTypeMovie;
+let genresType = null;
 const apiKey = 'cc37399832696ae72d6412c05725058a';
 const imageUrl = 'https://image.tmdb.org/t/p/original';
 const personUrl = 'https://api.themoviedb.org/3/person/';
@@ -12,39 +14,70 @@ let genreNames;
 import('../src/moviesPlay.js')
     .then(res => {
 		console.log(res);
-        console.log('data imported into data constant');
-		
         data = res;
+        console.log('data imported into data constant');
+		console.log('after populate genre dropdown');
         filteredMoviesOutput = run(); // Save the output from run()
+		
+		populateGenreDropdown();
+		const optionsArray = moviesDropdown(filteredMoviesOutput);
+		showMovie(queryParamsMap.get('id'),queryParamsMap.get('posterPath'));
+		document.getElementById('movies').innerHTML = optionsArray;
+		console.log('line 23');
+		
+    })
+    .catch(error => {
+        console.error('Error importing data:', error);
+    });
+
+
+//----------------------------------------Genres selection method-----------------------------------------------
+
+	function populateGenreDropdown(){
 		let genreOptions =`<option value="" disabled selected>Select Genre</option>`;
-		genreNames = res.genres.map(genre => genre.name);
+		genreNames = data.genres.map(genre => genre.name);
 		console.log('genres data ', genreNames);
 		genreNames.forEach(element => {
 			console.log(element);
 			genreOptions += `<option value="${element}">${element}</option>`
 		});
 		document.getElementById('genre').innerHTML=genreOptions;
-
-		showMovie(queryParamsMap.get('id'),queryParamsMap.get('posterPath'));
-		const optionsArray = moviesDropdown(filteredMoviesOutput);
-		document.getElementById('movies').innerHTML = optionsArray;
-		console.log('line 23');
-    })
-    .catch(error => {
-        console.error('Error importing data:', error);
-    });
-	function populateGenreList() {
-
 		
 	}
 
+
+
+	function genreSelected() {
+		 genresType = document.getElementById('genre').value;
+		console.log('selected genre is: ', genresType);
+		
+		genresTypeMovie = data.hindiMovies
+		.filter(movie => movie.genres.some(a => a.name === genresType))
+		.map(movie => ({
+			movie: movie.originalTitle,
+			id: movie.tmdbId,
+			releaseDate:movie.releaseDate,
+			runtimeMinutes: movie.runtimeMinutes,
+			PosterPath: movie.posterUrl,
+			movieGenres: movie.genres.map(g => g.name).join(',')
+		}));
+		//getMovieInformation();
+		
+		console.log('selected genres movie are ', genresTypeMovie);
+		return genresTypeMovie;
+	}
+
+//-----------------------------------------------RUN METHOD-------------------------------------------------------
+
+
 function run() {
+	
     const filteredMovies = data.hindiMovies.filter(movie => {
 		console.log('line 43 ',movie);
-		movie.filter(m => {
-			m.genre.name
-		})
-        return movie.runtimeMinutes > 180;
+		if(genresType != null){
+			console.log('just a log to check');
+		}
+        return movie.runtimeMinutes > 180 ;
     });
 
     // Reformat the filtered output
@@ -61,10 +94,14 @@ function run() {
         };
     });
 
-    console.log(output);
+    console.log('line 78 ',output);
 	
     return output; // Return the output to be used later
 }
+
+
+//--------------------------------------------Get Movie Information-----------------------------------------------
+
 
 function getMovieInformation() {
     console.log('inside getMovieInfo');
@@ -73,7 +110,8 @@ function getMovieInformation() {
     let htmlContent = `<div class="ui three column grid">`;
 
     // Iterate through the saved output and display movie information
-    const fetchPromises = filteredMoviesOutput.map(movie => {
+	const fetchPromises = filteredMoviesOutput.map(movie => {
+    //const fetchPromises = genresTypeMovie.map(movie => {
         const fetchUrl = `https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}`;
 
         return fetch(fetchUrl)
@@ -113,9 +151,9 @@ function getMovieInformation() {
         .catch(error => console.error('Error in Promise.all:', error));
 }
 
-function genreSelected(){
-	console.log('selected genre is : ',document.getElementById('genre').value);
-}
+	
+//-------------------------------------------SHOW MOVIE--------------------------------------------------------
+
 
 function showMovie(id, posterPath) {
 	const movieInfo = data.hindiMovies.find(movie => {
@@ -162,6 +200,9 @@ function showMovie(id, posterPath) {
 	return castHtml;
   }
 
+
+//----------------------------------------------MOVIES DROPDOWN-------------------------------------------------
+
   function moviesDropdown(filteredMoviesOutput) {
 	let options;
 	const moviesList = filteredMoviesOutput.forEach(movie => {
@@ -171,6 +212,9 @@ function showMovie(id, posterPath) {
 	return options;
 	// document.getElementById('movies').innerHTML = options;
   }
+
+
+//-----------------------------------------MOVIESELECTED----------------------------------------------------
 
   function movieSelected(){
 	  const selectedMovieId = document.getElementById('movies').value;
