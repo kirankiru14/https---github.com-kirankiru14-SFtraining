@@ -11,6 +11,12 @@ const movieUrl = 'https://api.themoviedb.org/3/movie/';
 const queryString = window.location.search;
 const queryParamsMap = new URLSearchParams(queryString);
 let genreNames;
+let selectedCastName;
+let filteredMovies;
+let movieIds;
+let simplifiedMovies;
+let combinedData;
+
 
 function openNav() {
 	document.getElementById("mySidebar").style.width = "250px";
@@ -22,6 +28,11 @@ function openNav() {
 	document.getElementById("main").style.marginLeft= "0";
   }
 
+  
+
+  
+  
+
 
 import('../src/moviesPlay.js')
     .then(res => {
@@ -29,13 +40,27 @@ import('../src/moviesPlay.js')
         data = res;
         console.log('data imported into data constant');
 		console.log('after populate genre dropdown');
-        filteredMoviesOutput = run(); // Save the output from run()
-		
-		populateGenreDropdown();
+		//console.log('cast Data is ',data.castData);
+        
+		// Now you can access castData from the imported data
+        var castData = data.castData;
+        console.log('castData:', castData);
+		  filteredMoviesOutput = run(); // Save the output from run()
+		  // Create a new array with only title and tmdbId properties
+		simplifiedMovies = data.hindiMovies.map(movie => ({
+			name: movie.title,
+			id: movie.tmdbId
+		}));
+		console.log(simplifiedMovies);
+		// Combine castData and simplifiedMovies into a single array
+  		combinedData = castData.concat(simplifiedMovies);
+		console.log(combinedData);
+		//populateGenreDropdown();
 		const optionsArray = moviesDropdown(filteredMoviesOutput);
 		showMovie(queryParamsMap.get('id'),queryParamsMap.get('posterPath'));
 		document.getElementById('movies').innerHTML = optionsArray;
 		console.log('line 23');
+		
 		
     })
     .catch(error => {
@@ -43,19 +68,99 @@ import('../src/moviesPlay.js')
     });
 
 
+
+//------------------------------------------------------------------------------------------------------------------
+	// Other JavaScript code that doesn't require the DOM to be fully loaded
+
+	document.addEventListener('DOMContentLoaded', function () {
+		var searchInput = document.getElementById('castSearch');
+		var suggestionsContainer = document.getElementById('suggestionsContainer');
+	  
+		searchInput.addEventListener('input', function () {
+		  var searchTerm = searchInput.value.toLowerCase();
+		  
+		  if (searchTerm.length >= 3) {
+            var filteredCast = combinedData.filter(function (castMember) {
+                return castMember.name.toLowerCase().includes(searchTerm);
+            });
+            displaySuggestions(filteredCast);
+        } else {
+            // Clear suggestions if the input length is less than 3
+            suggestionsContainer.innerHTML = '';
+        }
+    });
+	  
+		function displaySuggestions(suggestions) {
+		  suggestionsContainer.innerHTML = '';
+	  
+		  suggestions.forEach(function (castMember) {
+			var suggestionDiv = document.createElement('div');
+			suggestionDiv.classList.add('suggestion');
+			suggestionDiv.textContent = castMember.name;
+	  
+			suggestionDiv.addEventListener('click', function () {
+				selectedCastName = castMember.name;
+			  // Handle selection (you can customize this)
+			  //alert('Selected: ' + castMember.name);
+			  // Clear the search input and suggestions
+			  searchInput.value = selectedCastName;
+			  suggestionsContainer.innerHTML = '';
+			  searchMovies();
+			});
+	  
+			suggestionsContainer.appendChild(suggestionDiv);
+		  });
+		}
+	  });
+
+	  function searchMovies() {
+		// Get the search input value
+		const searchValue = document.getElementById('castSearch').value.toLowerCase();
+	 
+		// Filter movies based on the search value
+		const filteredEnglishMovies = data.movies.filter(movie => {
+			// Check if the search value matches the movie title or any cast name
+			return ( 
+				movie.title.toLowerCase().includes(searchValue) ||
+				movie.cast.some(actor => actor.name.toLowerCase().includes(searchValue))
+			);
+		});
+		const filteredHindiMovies = data.hindiMovies.filter(movie => {
+		  // Check if the search value matches the movie title or any cast name
+		  return (
+			  movie.title.toLowerCase().includes(searchValue) ||
+			  movie.cast.some(actor => actor.name.toLowerCase().includes(searchValue))
+		  );
+	  });
+	 
+	  filteredMovies = filteredHindiMovies.concat(filteredEnglishMovies);
+		// Display the search results
+		movieIds = filteredMovies.map(movie => ({
+			movie: movie.originalTitle,
+			id: movie.tmdbId,
+			releaseDate:movie.releaseDate,
+			runtimeMinutes: movie.runtimeMinutes,
+			PosterPath: movie.posterUrl
+			//movieGenres: movie.genres.map(g => g.name).join(',')
+		}));
+		 
+		getMovieInformation();
+	}
+  
+
 //----------------------------------------Genres selection method-----------------------------------------------
 
-	function populateGenreDropdown(){
-		let genreOptions =`<option value="" disabled selected>Select Genre</option>`;
-		genreNames = data.genres.map(genre => genre.name);
-		console.log('genres data ', genreNames);
-		genreNames.forEach(element => {
-			console.log(element);
-			genreOptions += `<option value="${element}">${element}</option>`
-		});
-		document.getElementById('genre').innerHTML=genreOptions;
+	// function populateGenreDropdown(){
+	// 	let genreOptions =`<option value="" disabled selected>Select Genre</option>`;
+	// 	genreNames = data.genres.map(genre => genre.name);
+	// 	console.log('genres data ', genreNames);
+	// 	genreNames.forEach(element => {
+	// 		console.log(element);
+	// 		genreOptions += `<option value="${element}">${element}</option>`
+	// 	});
+	// 	document.getElementById('genre').innerHTML=genreOptions;
 		
-	}
+	// }
 
 
 
@@ -83,15 +188,13 @@ import('../src/moviesPlay.js')
 
 
 function run() {
-	
-    const filteredMovies = data.hindiMovies.filter(movie => {
-		console.log('line 43 ',movie);
+	const filteredMovies = data.hindiMovies.filter(movie => {
+		//console.log('line 43 ',movie);
 		if(genresType != null){
 			console.log('just a log to check');
 		}
-        return movie.runtimeMinutes > 180 ;
+        return movie.tmdbId > 180 ;
     });
-
     // Reformat the filtered output
     const output = filteredMovies.map(movie => {
 		// const genreNames = movie.genres.map(genre => genre.name);
@@ -105,10 +208,88 @@ function run() {
 			
         };
     });
-
     console.log('line 78 ',output);
-	
+	//getCastDetails();
     return output; // Return the output to be used later
+}
+
+
+//-----------------------------------method to generate cast data---------------------------------------------
+
+
+function getCastDetails(){
+// Assuming you have the movie data stored in variables named 'movies' and 'hindiMovies'
+
+const allCast = [];
+const encounteredIds = new Set();
+
+// Function to process cast array and add unique cast members to allCast
+function processCast(castArray) { 
+  castArray.forEach(castMember => {
+    if (castMember.name && castMember.id) {
+      if (!encounteredIds.has(castMember.id)) {
+        const castInfo = {
+          name: castMember.name,
+          id: castMember.id,
+        };
+
+        allCast.push(castInfo);
+        encounteredIds.add(castMember.id);
+      }
+    }
+  });
+}
+
+// Iterate through each movie in the 'movies' array
+data.movies.forEach(movie => {
+  if (movie.cast && Array.isArray(movie.cast)) {
+    processCast(movie.cast);
+  }
+});
+
+// Iterate through each movie in the 'hindiMovies' array
+data.hindiMovies.forEach(movie => {
+  if (movie.cast && Array.isArray(movie.cast)) {
+    processCast(movie.cast);
+  }
+});
+
+// Sort the 'allCast' array based on id in ascending order
+allCast.sort((a, b) => {
+	// Convert ids to numbers for proper numeric comparison
+	const idA = parseInt(a.id, 10);
+	const idB = parseInt(b.id, 10);
+  
+	return idA - idB;
+  });
+
+// 'allCast' now contains an array of objects with unique 'name' and 'id' properties for all cast members in both movies and hindiMovies
+console.log(allCast);
+
+// Assuming you have the 'allCast' array
+
+// Convert the 'allCast' array to a JSON string
+const jsonString = JSON.stringify(allCast, null, 2);
+
+// Create a Blob from the JSON string
+const blob = new Blob([jsonString], { type: 'application/json' });
+
+// Create a download link
+const link = document.createElement('a');
+link.href = URL.createObjectURL(blob);
+link.download = 'castData.json';
+
+// Append the link to the body
+document.body.appendChild(link);
+
+// Trigger a click on the link to start the download
+link.click();
+
+// Remove the link from the body
+document.body.removeChild(link);
+
+console.log('JSON file exported successfully.');
+
 }
 
 
@@ -122,7 +303,7 @@ function getMovieInformation() {
     let htmlContent = `<div class="ui three column grid">`;
 
     // Iterate through the saved output and display movie information
-	const fetchPromises = filteredMoviesOutput.map(movie => {
+	const fetchPromises = movieIds.map(movie => {
     //const fetchPromises = genresTypeMovie.map(movie => {
         const fetchUrl = `https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}`;
 

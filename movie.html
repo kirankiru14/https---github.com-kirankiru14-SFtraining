@@ -5,19 +5,9 @@
     <link rel="icon" type="image/x-icon" href="/images/favicon-img.png">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.css">
-    <script src="index.js"></script>
+    <script src="./src/showMovie.js"></script>
   </head>
   <body>
-    <div class="ui container">
-      <div class="four wide column right aligned" id="content">
-        <label for="movies">Select a movie:</label>
-        <select name="movies" id="movies" 
-          class="ui compact selection dropdown"
-          onchange="movieSelected()"
-          >
-          
-        </select>
-    </div>
       <h1 id="title"></h1>
       <div id="overview"></div>
       <hr/>
@@ -28,5 +18,6 @@
         </div>
       </div>
     </div>
+  
   </body>
 </html>

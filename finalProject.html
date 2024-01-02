@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Learning is Fun</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon-img.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.css">
+    
+    <script src="finalProject.js"></script>
+    <style>
+        /* Add a style for the heading box */
+        .heading-box {
+            background-color: black;
+            color: white;
+            /* Set text color to white or any contrasting color */
+            padding: 90px;
+            /* Adjust padding as needed */
+            text-align: center;
+            /* Center align text */
+            font-size: 44px;
+            /* Set font size as needed */
+        }
+
+        .search-container {
+            margin: 5px;
+        }
+
+        .search-box {
+            width: 1200px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .suggestions-container {
+            margin-top: 10px;
+            margin-bottom: 30px;
+        }
+
+        .suggestion {
+            padding: 5px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+
+        .box-container {
+            border: 5px solid #ccc;
+            /* Border color */
+            padding: 15px;
+            /* Adjust padding as needed */
+            width: 20%;
+            /* Set the width of the box as needed */
+            float: left;
+            /* Float the box to the left */
+        }
+
+        /* Style for radio buttons */
+        input[type="radio"] {
+            margin-right: 5px;
+            /* Add some space between radio button and label */
+        }
+
+        .ui.container {
+            display: flex;
+            /* Set the container to a flex container */
+            justify-content: flex-start;
+            /* Align items to the start (left side) of the container */
+        }
+
+        #content {
+            width: 100%;
+            /* Set the width of the content div */
+            margin-left: 20px;
+            /* Add margin to separate it from the box */
+        }
+
+        .scrollable-box {
+            width: 1200px;
+            height: 200px;
+            overflow: auto;
+            /* This property enables scrolling when content overflows the box */
+            border: 0px solid #ccc;
+            /* Optional border for better visualization */
+            padding: 10px;
+            /* Optional padding for better spacing */
+        }
+        body {
+            font-family: "Lato", sans-serif;
+          }
+          
+          .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+            color: grey;
+          }
+          
+          .sidebar a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+          }
+          
+          .sidebar a:hover {
+            color: #f1f1f1;
+          }
+          
+          .sidebar .closebtn {
+            position: absolute; /* Change from fixed to absolute */
+            top: 8px;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+            z-index: 2; /* Adjusted z-index value */
+        }
+          
+          .openbtn {
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #111;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+          }
+          
+          .openbtn:hover {
+            background-color: #444;
+          }
+          
+          #main {
+            transition: margin-left .5s;
+            padding: 16px;
+          }
+          
+          /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+          @media screen and (max-height: 450px) {
+            .sidebar {padding-top: 15px;}
+            .sidebar a {font-size: 18px;}
+          }
+    </style>
+
+</head>
+
+<body>
+    <div class="heading-box">Welcome to Movie Site</div>
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+        <a href="#">
+            <div class="ui form">
+                    <label>Movies Type:-</label>
+                    <div class="field">
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="frequency" value="International" onchange="setMovieType()">
+                            <label  style="color: rgb(182, 177, 177);">International</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="frequency" value="Hindi" onchange="setMovieType()">
+                            <label style="color: rgb(182, 177, 177);">Hindi</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="frequency" value="All" checked onchange="setMovieType()">
+                            <label style="color: rgb(182, 177, 177);">All</label>
+                        </div>
+                    
+                </div>
+            </div>
+        </a>
+        <br>
+        <p>Select Genres:-</p>
+        <div id="Genres"></div>
+        <p>Condition Satisfy:-</p>
+        <input type="radio" id="andRadio" name="radio" value="AND" onchange="setCondition()" />
+        <label for="andRadio">Both</label>
+        <input type="radio" id="orRadio" name="radio" value="OR" onchange="setCondition()" checked/>
+        <label for="orRadio">Any one</label>
+        <br />
+        <br>
+        <label for="decadeDropdown">Select Decade:</label>
+        <br>
+        <select id="decadeDropdown" onchange="handleDecadeChange()">
+            <option value="1960">1960-1969</option>
+            <option value="1970">1970-1979</option>
+            <option value="1980">1980-1989</option>
+            <option value="1990">1990-1999</option>
+            <option value="2000">2000-2009</option>
+           
+        </select>
+        <br />
+        <button class="ui secondary button" onclick="showMovie()">Apply</button>
+    </div>
+        
+      </div>
+      <div id="main">
+        <button class="openbtn" onclick="openNav()">☰ Menu</button>  
+        
+      </div>
+    <!-- Heading box added here -->
+   
+
+    <!-- <div class="box-container">
+        <div class="ui form">
+            <div class="inline fields">
+                <label>Movies Type:-</label>
+                <div class="field">
+                    <div class="ui radio checkbox">
+                        <input type="radio" name="frequency" value="International" onchange="setMovieType()">
+                        <label>International</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui radio checkbox">
+                        <input type="radio" name="frequency" value="Hindi" onchange="setMovieType()">
+                        <label>Hindi</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui radio checkbox">
+                        <input type="radio" name="frequency" value="All" checked onchange="setMovieType()">
+                        <label>All</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div>
+            <label for="decadeDropdown">Select Decade:</label>
+            <select id="decadeDropdown" onchange="handleDecadeChange()">
+                <option value="1960">1960-1969</option>
+                <option value="1970">1970-1979</option>
+                <option value="1980">1980-1989</option>
+                <option value="1990">1990-1999</option>
+                <option value="2000">2000-2009</option>
+               
+            </select>
+        </div>
+        <p>Select Genres:-</p>
+        <div id="Genres"></div>
+        <p>Condition Satisfy:-</p>
+        <input type="radio" id="andRadio" name="radio" value="AND" onchange="setCondition()" />
+        <label for="andRadio">Both</label>
+        <input type="radio" id="orRadio" name="radio" value="OR" onchange="setCondition()" checked/>
+        <label for="orRadio">Any one</label>
+        <br /> <br />
+        <button class="ui secondary button" onclick="showMovie()">Apply</button>
+    </div> -->
+    <label for="searchInput" style="font-size:large"><b>Enter movie or cast name:</b></label>
+    <br />
+    <button class="ui secondary button" onclick="showSearchedMovie()" style="float: right; ">Search Movie</button>
+    <div class="search-container">
+        <input id="searchInput" class="search-box" type="text" onchange="searchMovies()"
+            placeholder="Search movie or cast names...">
+        <div class="scrollable-box">
+            <div id="suggestionsContainer" class="suggestions-container"></div>
+        </div>
+    </div>
+    <div class="ui container">
+        <div id="content"></div>
+    </div>
+
+</body>
+
+</html>
+
