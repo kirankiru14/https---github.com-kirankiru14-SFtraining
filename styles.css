@@ -7,3 +7,20 @@ button {
 img {
     height: 430px;
 }
+.search-container {
+    text-align: center;
+}
+
+.flex-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-box {
+    margin-right: 10px; 
+    margin-left: 20px;/* Adjust the margin as needed */
+}
+.suggestions-container {
+    margin-left: 500px;
+}
