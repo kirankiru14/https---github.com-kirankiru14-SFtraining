@@ -16,7 +16,7 @@ Make sure the following software is installed on your machine:
 Open a command prompt and clone the repository:
 
 ```bash
-git clone https://github.com/kirankiru14/https---github.com-kirankiru14-SFtraining.git
+git clone https://github.com/kirankiru14/https---github.com-kirankiru14-SFtraining/tree/Final-Javascript-Project
 
 
 ## Running the Project
