@@ -39,7 +39,7 @@ import('./src/moviesPlay.js')
         combinedData = castData.concat(simplifiedMovies);
         showGenres();
     });
-
+//this is onchange method of language radio button
 function setMovieType() {
     const selectedMovieType = document.querySelector('input[name="frequency"]:checked').value;
     setMovieFilter(selectedMovieType);
@@ -116,8 +116,10 @@ function run(selectedCondition) {
             const genreMovies = allMovies.filter(movie => movie.genres.some(genre => genre.id === genreId));
             return result.concat(genreMovies);
         }, []);
+        console.log('OUTPUT line 119 : ',filteredMovies);
     }
     filteredMovies = Array.from(new Set(filteredMovies));
+    console.log('OUTPUT line 122 : ',filteredMovies);
     moviesIdbyGenres = filteredMovies.map(movie => movie.tmdbId);
     filter();
 }
@@ -158,19 +160,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function searchMovies() {
     const searchValue = document.getElementById('searchInput').value.toLowerCase();
-    const filteredEnglishMovies = data.movies.filter(movie => {
+    const filteredMovies = allMovies.filter(movie => {
         return (
             movie.title.toLowerCase().includes(searchValue) ||
             movie.cast.some(actor => actor.name.toLowerCase().includes(searchValue))
         );
     });
-    const filteredHindiMovies = data.hindiMovies.filter(movie => {
-        return (
-            movie.title.toLowerCase().includes(searchValue) ||
-            movie.cast.some(actor => actor.name.toLowerCase().includes(searchValue))
-        );
-    });
-    filteredMovies = filteredHindiMovies.concat(filteredEnglishMovies);
     moviesIdbySearch = filteredMovies.map(movie => movie.tmdbId);
 }
 
@@ -230,10 +225,11 @@ function getMovieHtml(moviesInfo) {
     const movieCards = moviesInfo.reduce((html, movie) => {
         const genresHtml = Array.isArray(movie.genres) ? movie.genres.map(genre => genre.name).join(', ') : '';
         return html + `
-        <div class="ui card">
+        <div class="card">
                 <div class="image">
                     <a href='./movie.html?id=${movie.id}&posterPath=${movie.posterPath}'>
-                        <img src='${imageUrl}${movie.posterPath}' />
+                        <img src='${imageUrl}${movie.posterPath}'
+                        title="Click to Know more about : ${movie.title}, Id : ${movie.id}" />
                     </a>
                 </div>
                 <div class="content">

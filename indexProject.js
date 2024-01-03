@@ -218,12 +218,8 @@ function run() {
 
 
 function getCastDetails(){
-// Assuming you have the movie data stored in variables named 'movies' and 'hindiMovies'
-
 const allCast = [];
 const encounteredIds = new Set();
-
-// Function to process cast array and add unique cast members to allCast
 function processCast(castArray) { 
   castArray.forEach(castMember => {
     if (castMember.name && castMember.id) {
@@ -240,56 +236,34 @@ function processCast(castArray) {
   });
 }
 
-// Iterate through each movie in the 'movies' array
 data.movies.forEach(movie => {
   if (movie.cast && Array.isArray(movie.cast)) {
     processCast(movie.cast);
   }
 });
 
-// Iterate through each movie in the 'hindiMovies' array
 data.hindiMovies.forEach(movie => {
   if (movie.cast && Array.isArray(movie.cast)) {
     processCast(movie.cast);
   }
 });
 
-// Sort the 'allCast' array based on id in ascending order
 allCast.sort((a, b) => {
-	// Convert ids to numbers for proper numeric comparison
 	const idA = parseInt(a.id, 10);
 	const idB = parseInt(b.id, 10);
   
 	return idA - idB;
   });
-
-// 'allCast' now contains an array of objects with unique 'name' and 'id' properties for all cast members in both movies and hindiMovies
 console.log(allCast);
-
-// Assuming you have the 'allCast' array
-
-// Convert the 'allCast' array to a JSON string
 const jsonString = JSON.stringify(allCast, null, 2);
-
-// Create a Blob from the JSON string
 const blob = new Blob([jsonString], { type: 'application/json' });
-
-// Create a download link
 const link = document.createElement('a');
 link.href = URL.createObjectURL(blob);
 link.download = 'castData.json';
-
-// Append the link to the body
 document.body.appendChild(link);
-
-// Trigger a click on the link to start the download
 link.click();
-
-// Remove the link from the body
 document.body.removeChild(link);
-
 console.log('JSON file exported successfully.');
-
 }
 
 

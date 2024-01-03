@@ -22,7 +22,7 @@ img {
     margin-left: 20px;/* Adjust the margin as needed */
 }
 .suggestions-container {
-    margin-left: 500px;
+    margin-left: 450px;
 }
 
 
@@ -40,20 +40,21 @@ img {
 }
 
 .search-box {
-    width: 1200px;
+    width: 800px;
     padding: 10px;
     font-size: 16px;
 }
 
 .suggestions-container {
     margin-top: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
+    
 }
 
 .suggestion {
     padding: 5px;
     cursor: pointer;
-    border: 1px solid #ccc;
+    border: 1px solid #0c0c0c;
     border-radius: 5px;
     margin-bottom: 5px;
 }
@@ -72,16 +73,18 @@ input[type="radio"] {
 .ui.container {
     display: flex;
     justify-content: flex-start;
+    margin-top: 20px;
 }
 
 #content {
     width: 100%;
-    margin-left: 80px;
+    margin-left: 150px;
+    
 }
 
 .scrollable-box {
     width: 1200px;
-    height: 200px;
+    height: 150px;
     overflow: auto;
     /* This property enables scrolling when content overflows the box */
     border: 0px solid #ccc;
@@ -172,4 +175,6 @@ select:focus {
     border-color: #2196F3; /* Change to your preferred focus color */
     box-shadow: 0 0 5px rgba(33, 150, 243, 0.7); /* Change to your preferred focus shadow */
 }
+
+
 
