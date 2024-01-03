@@ -1,5 +1,4 @@
-
-let movieIds; 
+let movieIds;
 let data;
 let selectedGenres = [];
 let combinedData;
@@ -8,7 +7,6 @@ const personUrl = 'https://api.themoviedb.org/3/person/';
 const apiKey = '42ee719896b25f8821890615eeabf17f';
 const movieUrl = 'https://api.themoviedb.org/3/movie/';
 const imageUrl = 'https://image.tmdb.org/t/p/original';
-
 
 let allMovies;
 let moviesIdbyLanguage;
@@ -20,31 +18,25 @@ let selectedDecade = null;
 function openNav() {
 	document.getElementById("mySidebar").style.width = "250px";
 	document.getElementById("main").style.marginLeft = "250px";
-  }
-  
-  function closeNav() {
+}
+
+function closeNav() {
 	document.getElementById("mySidebar").style.width = "0";
 	document.getElementById("main").style.marginLeft= "0";
-  }
-
+}
 
 import('./src/moviesPlay.js')
     .then(res => {
-        console.log('data imported into data constant');
         data = res;
         allMovies = data.movies.concat(data.hindiMovies);
-        console.log('list of all movies are', allMovies);
         moviesIdbyLanguage = allMovies.map(movie => movie.tmdbId);
         var castData = data.castData;
-        console.log('castData:', castData);
-        filteredMoviesOutput = run(); // Save the output from run()
+        filteredMoviesOutput = run();
         let simplifiedMovies = allMovies.map(movie => ({
             name: movie.title,
             id: movie.tmdbId
         }));
-        console.log(simplifiedMovies);
         combinedData = castData.concat(simplifiedMovies);
-        console.log(combinedData);
         showGenres();
     });
 
@@ -54,21 +46,20 @@ function setMovieType() {
 }
 
 function setMovieFilter(selectedMovieType) {
-    console.log(selectedMovieType);
     if (selectedMovieType === "International") {
         moviesIdbyLanguage = data.movies.map(movie => movie.tmdbId);
+        filter();
     } else if (selectedMovieType === "Hindi") {
         moviesIdbyLanguage = data.hindiMovies.map(movie => movie.tmdbId);
+        filter();
     } else if (selectedMovieType === "All") {
         moviesIdbyLanguage = allMovies.map(movie => movie.tmdbId);
-        console.log('all movie Ids are ', moviesIdbyLanguage);
+        filter();
     }
-
 }
 
 function showGenres() {
     let checkboxHTML = '<div id="GenresContainer">';
-    console.log(data.genres);
     data.genres.forEach(element => {
         checkboxHTML += `<input type="checkbox" name="${element.name}" value="${element.id}"/>
                           <label>${element.name}</label> <br/>`;
@@ -86,39 +77,32 @@ function showGenres() {
                     selectedGenres.splice(index, 1);
                 }
             }
-            console.log("Selected Genres:", selectedGenres);
-            setCondition(); 
+            setCondition();
         }
     });
 }
-
-
 
 function setCondition() {
     let selectedCondition = "";
     const andRadio = document.getElementById("andRadio");
     const orRadio = document.getElementById("orRadio");
-    
+
     if (andRadio.checked) {
         selectedCondition = "AND";
     } else if (orRadio.checked) {
-        console.log('line 432');
         selectedCondition = "OR";
     } else {
-        console.log('inside else condition line 435');
         selectedCondition = "OR";
-        orRadio.checked = true; 
+        orRadio.checked = true;
     }
 
     run(selectedCondition);
-    console.log(selectedCondition);
 }
-
 
 function run(selectedCondition) {
     let filteredMovies = [];
     if (selectedCondition === "AND") {
-        data.movies.forEach(movie => {
+        allMovies.forEach(movie => {
             const hasAllGenres = selectedGenres.every(genreId =>
                 movie.genres.some(genre => genre.id === genreId)
             );
@@ -126,37 +110,16 @@ function run(selectedCondition) {
                 filteredMovies.push(movie);
             }
         });
-        data.hindiMovies.forEach(movie => {
-            const hasAllGenres = selectedGenres.every(genreId =>
-                movie.genres.some(genre => genre.id === genreId)
-            );
-            if (hasAllGenres) {
-                filteredMovies.push(movie);
-            }
-        });
+        filter();
     } else {
-        selectedGenres.forEach(genreId => {
-            let moviesWithGenre = data.movies.filter(movie =>
-                movie.genres.some(genre => genre.id === genreId)
-            );
-            let hindimoviesWithGenre = data.hindiMovies.filter(movie =>
-                movie.genres.some(genre => genre.id === genreId)
-            );
-            moviesWithGenre = moviesWithGenre.concat(hindimoviesWithGenre);
-            filteredMovies = filteredMovies.concat(moviesWithGenre);
-        });
+        filteredMovies = selectedGenres.reduce((result, genreId) => {
+            const genreMovies = allMovies.filter(movie => movie.genres.some(genre => genre.id === genreId));
+            return result.concat(genreMovies);
+        }, []);
     }
     filteredMovies = Array.from(new Set(filteredMovies));
     moviesIdbyGenres = filteredMovies.map(movie => movie.tmdbId);
-    if(selectedDecade != null){
-        moviesIdbyGenres = moviesIdbyGenres.filter(movieId =>
-            movieIdsByDecade.includes(movieId)
-            );
-    }else{
-        moviesIdbyGenres;
-    }
-    console.log(filteredMovies);
-    console.log('line 147 ', movieIds);
+    filter();
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -185,7 +148,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             suggestionDiv.addEventListener('click', function () {
                 selectedCastName = castMember.name;
-                console.log('selected cast name is : ', selectedCastName);
                 searchInput.value = selectedCastName;
                 suggestionsContainer.innerHTML = '';
             });
@@ -212,24 +174,6 @@ function searchMovies() {
     moviesIdbySearch = filteredMovies.map(movie => movie.tmdbId);
 }
 
-function showMovie() {
-    console.log("line 211-->>", moviesIdbyLanguage);
-    console.log("line 185-->>", moviesIdbyGenres);
-
-    if (selectedGenres.length === 0) {
-        // If no genres are selected, consider all movies
-        movieIds = moviesIdbyLanguage;
-    } else {
-        movieIds = moviesIdbyLanguage.filter(function (element) {
-            return moviesIdbyGenres.includes(element);
-        });
-    }
-
-    console.log("line 185-->>", movieIds);
-    getMovieInformation();
-}
-
-
 function showSearchedMovie() {
     movieIds = moviesIdbySearch;
     getMovieInformation();
@@ -237,11 +181,8 @@ function showSearchedMovie() {
 
 function handleDecadeChange() {
     selectedDecade = parseInt(document.getElementById('decadeDropdown').value);
-    console.log(`Selected Decade: ${selectedDecade}`);
-    movieIds = getMovieIdsByDecade(selectedDecade);
-     movieIds = movieIds.filter(id => moviesIdbyLanguage.includes(id))
-    console.log('Movie IDs by decade :', movieIds);
-    getMovieInformation();
+    getMovieIdsByDecade(selectedDecade);
+    filter();
 }
 
 function getMovieIdsByDecade(decade) {
@@ -250,7 +191,7 @@ function getMovieIdsByDecade(decade) {
     const endYear = startYear + 9;
     allMovies.forEach(movie => {
         const movieYear = parseInt(movie.releaseDate.substring(0, 4));
-        if (movieYear >= startYear && movieYear <= endYear ) {
+        if (movieYear >= startYear && movieYear <= endYear) {
             movieIdsByDecade.push(movie.tmdbId);
         }
     });
@@ -258,7 +199,6 @@ function getMovieIdsByDecade(decade) {
 }
 
 function getMovieInformation() {
-    console.log('Line 88---->', movieIds);
     const fetchArray = movieIds.map(movieId => {
         return (
             fetch(`${movieUrl}${movieId}?api_key=${apiKey}`)
@@ -273,12 +213,11 @@ function getMovieInformation() {
                     id: resp.id, overview: resp.overview,
                     posterPath: resp.poster_path, releaseDate: resp.release_date,
                     runTime: resp.runtime, tagLine: resp.tagline,
-                    title: resp.title
+                    title: resp.title,
+                    genres:resp.genres
                 };
             });
-            console.log('line 106 ', moviesInfo);
             if (moviesInfo.length == 0) {
-                console.log('inside If');
                 document.getElementById('content').innerHTML = "<h1>No Movies Found </h1>";
             } else {
                 document.getElementById('content').innerHTML = getMovieHtml(moviesInfo);
@@ -289,6 +228,7 @@ function getMovieInformation() {
 function getMovieHtml(moviesInfo) {
     let movieHtml = ' <div class="ui link cards">';
     const movieCards = moviesInfo.reduce((html, movie) => {
+        const genresHtml = Array.isArray(movie.genres) ? movie.genres.map(genre => genre.name).join(', ') : '';
         return html + `
         <div class="ui card">
                 <div class="image">
@@ -299,7 +239,8 @@ function getMovieHtml(moviesInfo) {
                 <div class="content">
                     <div class="header">${movie.title}</div>
                     <div class="meta">
-                        <a>${movie.releaseDate}</a>
+                        <a>${movie.releaseDate}</a><br>
+                        <a>${genresHtml}</a>
                     </div>
                     <div class="description">
                         ${movie.tagLine}
@@ -312,6 +253,20 @@ function getMovieHtml(moviesInfo) {
     return movieHtml;
 }
 
+function filter(){
+    let finalFilteredIds = moviesIdbyLanguage;
 
+    if (moviesIdbyGenres && moviesIdbyGenres.length > 0) {
+        finalFilteredIds = finalFilteredIds.filter(movieId =>
+            moviesIdbyGenres.includes(movieId)
+        );
+    }
 
-
+    if (movieIdsByDecade && movieIdsByDecade.length > 0) {
+        finalFilteredIds = finalFilteredIds.filter(movieId =>
+            movieIdsByDecade.includes(movieId)
+        );
+    }
+    movieIds = finalFilteredIds;
+    getMovieInformation();
+}

@@ -1,5 +1,5 @@
 .container {
-    margin-top: 20px;
+    margin-top: 00px;
 }
 button {
     margin-top: 20px !important;
@@ -24,3 +24,152 @@ img {
 .suggestions-container {
     margin-left: 500px;
 }
+
+
+
+.heading-box {
+    background-color: black;
+    color: white;
+    padding: 50px;
+    text-align: center;
+    font-size: 44px;
+}
+
+.search-container {
+    margin: 5px;
+}
+
+.search-box {
+    width: 1200px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.suggestions-container {
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+.suggestion {
+    padding: 5px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.box-container {
+    border: 5px solid #ccc;
+    padding: 15px;
+    width: 20%;
+    float: left;
+}
+
+input[type="radio"] {
+    margin-right: 5px;
+}
+
+.ui.container {
+    display: flex;
+    justify-content: flex-start;
+}
+
+#content {
+    width: 100%;
+    margin-left: 80px;
+}
+
+.scrollable-box {
+    width: 1200px;
+    height: 200px;
+    overflow: auto;
+    /* This property enables scrolling when content overflows the box */
+    border: 0px solid #ccc;
+    /* Optional border for better visualization */
+    padding: 10px;
+    /* Optional padding for better spacing */
+}
+body {
+    font-family: "Lato", sans-serif;
+  }
+  
+  .sidebar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    color: grey;
+  }
+  
+  .sidebar a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+  }
+  
+  .sidebar a:hover {
+    color: #f1f1f1;
+  }
+  
+  .sidebar .closebtn {
+    position: absolute; /* Change from fixed to absolute */
+    top: 8px;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+    z-index: 2; /* Adjusted z-index value */
+}
+  
+  .openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #111;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+  }
+  
+  .openbtn:hover {
+    background-color: #444;
+  }
+  
+  #main {
+    transition: margin-left .5s;
+    padding: 16px;
+  }
+  
+  /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+  @media screen and (max-height: 450px) {
+    .sidebar {padding-top: 15px;}
+    .sidebar a {font-size: 18px;}
+  }
+
+select {
+    width: 200px;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Optional: Style for better visual appearance */
+select:hover {
+    border-color: #555;
+}
+
+/* Optional: Style for better visual appearance */
+select:focus {
+    outline: none;
+    border-color: #2196F3; /* Change to your preferred focus color */
+    box-shadow: 0 0 5px rgba(33, 150, 243, 0.7); /* Change to your preferred focus shadow */
+}
+
