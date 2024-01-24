@@ -216,16 +216,18 @@ function getMovieInformation() {
                 document.getElementById('content').innerHTML = "<h1>No Movies Found </h1>";
             } else {
                 document.getElementById('content').innerHTML = getMovieHtml(moviesInfo);
+                console.log(moviesInfo);
             }
         });
 }
 
 function getMovieHtml(moviesInfo) {
-    let movieHtml = ' <div class="ui link cards">';
+    let movieHtml = ' <div class="ui grid">';
     const movieCards = moviesInfo.reduce((html, movie) => {
         const genresHtml = Array.isArray(movie.genres) ? movie.genres.map(genre => genre.name).join(', ') : '';
         return html + `
-        <div class="card">
+        <div class="four wide column">
+        <div class="ui card">
                 <div class="image">
                     <a href='./movie.html?id=${movie.id}&posterPath=${movie.posterPath}'>
                         <img src='${imageUrl}${movie.posterPath}'
@@ -240,6 +242,7 @@ function getMovieHtml(moviesInfo) {
                     </div>
                     <div class="description">
                         ${movie.tagLine}
+                    </div>
                     </div>
                 </div>
             </div>
@@ -265,4 +268,7 @@ function filter(){
     }
     movieIds = finalFilteredIds;
     getMovieInformation();
+    // console.log(movieIds.map(movie =>{
+    //     movie.
+    // }));
 }

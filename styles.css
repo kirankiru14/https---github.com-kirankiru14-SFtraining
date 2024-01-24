@@ -5,7 +5,7 @@ button {
     margin-top: 20px !important;
 }
 img {
-    height: 430px;
+    height: 390px;
 }
 .search-container {
     text-align: center;
@@ -78,7 +78,7 @@ input[type="radio"] {
 
 #content {
     width: 100%;
-    margin-left: 150px;
+    margin-left: 80px;
     
 }
 
